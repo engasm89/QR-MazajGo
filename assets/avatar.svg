@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <rect width="96" height="96" fill="#242433"/>
+  <circle cx="48" cy="36" r="16" fill="#3a3a4d"/>
+  <ellipse cx="48" cy="78" rx="28" ry="22" fill="#3a3a4d"/>
+  <text x="48" y="92" text-anchor="middle" fill="#9b98a8" font-family="system-ui,sans-serif" font-size="8">Replace me</text>
+</svg>
