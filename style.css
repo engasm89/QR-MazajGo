@@ -455,32 +455,36 @@ body::before {
 
 .link-section .links,
 .link-section > .cta-pair,
-.link-section > .link-card,
 .link-section > .links--products {
-  gap: var(--space-sm);
+  gap: var(--card-gap);
+}
+
+.link-section > .link-card + .link-card {
+  margin-top: 0;
 }
 
 .cta-pair {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--card-gap);
 }
 
-/* ── Base link card ── */
+/* ── Base link card — glassmorphism ── */
 .link-card {
   display: flex;
   align-items: center;
   gap: var(--space-md);
   min-height: var(--tap-min);
   padding: 0.9rem 1.1rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: var(--glass-bg-fallback);
+  border: 1px solid var(--glass-border-subtle);
   border-radius: var(--radius);
   color: var(--text);
   text-decoration: none;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   transition:
     border-color 0.22s ease,
     box-shadow 0.22s ease,
@@ -488,19 +492,46 @@ body::before {
     background 0.22s ease;
 }
 
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .link-card,
+  .visit-address {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+  }
+}
+
+.link-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
+}
+
 .link-card::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 55%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, transparent 55%);
   opacity: 0;
   pointer-events: none;
+  border-radius: inherit;
+  z-index: 0;
   transition: opacity 0.22s ease;
 }
 
+.link-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .link-card:hover {
-  border-color: var(--border);
-  box-shadow: var(--shadow-md);
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border);
+  box-shadow: var(--glass-shadow-hover), var(--glass-inset);
   transform: translateY(-2px);
 }
 
@@ -520,24 +551,50 @@ body::before {
   box-shadow: var(--shadow-sm);
 }
 
-/* ── WhatsApp CTAs — prominent green ── */
+/* ── WhatsApp CTAs — glassy green accent ── */
 .link-card--cta {
   min-height: 58px;
   padding: 1rem 1.15rem;
-  background: linear-gradient(135deg, var(--whatsapp-bg) 0%, var(--white) 55%, #f0faf4 100%);
-  border: 2px solid var(--whatsapp-border);
-  box-shadow: var(--shadow-md), 0 0 0 1px rgba(37, 211, 102, 0.1);
+  background: var(--glass-cta-bg-fallback);
+  border: 1.5px solid var(--glass-cta-border);
+  box-shadow: var(--glass-shadow), var(--glass-inset), 0 0 0 1px rgba(37, 211, 102, 0.08);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .link-card--cta {
+    background: linear-gradient(
+      135deg,
+      var(--glass-cta-bg) 0%,
+      rgba(255, 255, 255, 0.48) 55%,
+      rgba(240, 250, 244, 0.55) 100%
+    );
+  }
+}
+
+.link-card--cta::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(37, 211, 102, 0.06) 100%);
 }
 
 .link-card--cta::after {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, transparent 50%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, transparent 50%);
 }
 
 .link-card--cta:hover {
+  background: var(--glass-cta-bg-hover);
   border-color: var(--whatsapp);
-  box-shadow: var(--shadow-card-hover), 0 0 0 4px var(--whatsapp-glow);
-  background: linear-gradient(135deg, #d4f5e0 0%, var(--white) 50%, #e8f9ef 100%);
+  box-shadow: var(--glass-shadow-hover), var(--glass-cta-glow), var(--glass-inset);
   transform: translateY(-3px);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .link-card--cta:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(212, 245, 224, 0.78) 0%,
+      rgba(255, 255, 255, 0.62) 50%,
+      rgba(232, 249, 239, 0.68) 100%
+    );
+  }
 }
 
 .link-card--cta:focus-visible {
@@ -593,7 +650,7 @@ body::before {
 .links--products {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
+  gap: var(--card-gap);
 }
 
 .link-card--product {
@@ -604,10 +661,20 @@ body::before {
   gap: 0.45rem;
   padding: 1rem 0.65rem;
   min-height: 80px;
-  background: linear-gradient(180deg, var(--white) 0%, var(--cream-warm) 100%);
-  border: 1.5px solid var(--border);
+  background: var(--glass-bg-fallback);
+  border: 1px solid var(--glass-border-subtle);
   border-radius: calc(var(--radius) + 2px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .link-card--product {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.58) 0%,
+      rgba(243, 235, 224, 0.5) 100%
+    );
+  }
 }
 
 .link-card--product .link-icon {
@@ -645,9 +712,19 @@ body::before {
 
 .link-card--product:hover {
   border-color: var(--maroon);
-  background: linear-gradient(180deg, var(--white) 0%, var(--maroon-subtle) 100%);
-  box-shadow: var(--shadow-card-hover);
+  background: var(--glass-bg-hover);
+  box-shadow: var(--glass-shadow-hover), var(--glass-inset);
   transform: translateY(-3px);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .link-card--product:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.72) 0%,
+      rgba(139, 21, 56, 0.1) 100%
+    );
+  }
 }
 
 .link-card--product:hover .link-icon {
@@ -664,7 +741,7 @@ body::before {
 .links--products-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--card-gap);
 }
 
 .links--products-list .link-card--product {
@@ -682,19 +759,27 @@ body::before {
   display: block;
 }
 
-/* ── Social cards — brand-colored icons ── */
+/* ── Social cards — brand-colored icons, glass base ── */
 .link-card--social {
   min-height: 56px;
   padding: 0.95rem 1.1rem;
-  border-width: 1.5px;
-  background: var(--white);
+  border-width: 1px;
+  background: var(--glass-bg-fallback);
+  border-color: var(--glass-border-subtle);
   border-radius: calc(var(--radius) + 1px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .link-card--social {
+    background: var(--glass-bg);
+  }
 }
 
 .link-card--social:hover {
+  background: var(--glass-bg-hover);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--glass-shadow-hover), var(--glass-inset);
 }
 
 .link-card--social .link-icon {
@@ -786,7 +871,7 @@ body::before {
 .link-section--social .links--social {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--card-gap);
 }
 
 /* ── Link card internals ── */
@@ -855,14 +940,25 @@ body::before {
    ══════════════════════════════════════ */
 .visit-address {
   padding: var(--space-md) var(--space-lg);
-  background: var(--white);
-  border: 1px solid var(--border-subtle);
+  background: var(--glass-bg-fallback);
+  border: 1px solid var(--glass-border-subtle);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
   text-align: center;
   font-size: 0.875rem;
   color: var(--text-secondary);
   line-height: 1.65;
+  position: relative;
+  overflow: hidden;
+}
+
+.visit-address::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--glass-shine);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .visit-address strong {
@@ -964,7 +1060,7 @@ body::before {
   }
 
   .cta-pair {
-    gap: var(--space-sm);
+    gap: var(--card-gap);
   }
 
   .links--products {
@@ -974,10 +1070,6 @@ body::before {
   .link-section--social,
   .link-section--products {
     padding: var(--space-xl) var(--space-lg);
-  }
-
-  .links--products {
-    gap: var(--space-md);
   }
 
   .link-card--product {
