@@ -61,6 +61,8 @@ https://YOUR_USERNAME.github.io/QR/
 3. Enable **Enforce HTTPS** once available
 
 ## Generate your QR code
+Print-ready QR files live in `assets/qr-code.svg` and `assets/qr-code.png`.
+
 
 Your QR code should point to your **final, stable** GitHub Pages URL.
 
